@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Nahom32/node-rest-api-exercise/issues"
   },
-  "homepage": "https://github.com/Nahom32/node-rest-api-exercise#readme"
+  "homepage": "https://github.com/Nahom32/node-rest-api-exercise#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
