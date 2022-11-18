@@ -1,0 +1,24 @@
+{
+  "name": "rest-api-exercise",
+  "version": "1.0.0",
+  "description": "A Node.js RESTful API Tutorial Project (Build a simple shop API)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nahom32/node-rest-api-exercise.git"
+  },
+  "keywords": [
+    "node",
+    "restful",
+    "api"
+  ],
+  "author": "Nahom Senay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nahom32/node-rest-api-exercise/issues"
+  },
+  "homepage": "https://github.com/Nahom32/node-rest-api-exercise#readme"
+}
