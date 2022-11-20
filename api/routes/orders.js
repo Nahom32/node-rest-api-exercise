@@ -9,6 +9,10 @@ router.get('/:productId',(req,res,next) => {
 });
 
 router.post('/:productId',function(req,res,next){
+    let order = {
+        id: req.body.id,
+        noOrders: req.body.noOrders
+    }
     res.status(201).json({
         message: 'Orders were created',
         id: req.params.productId
