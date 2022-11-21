@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const productRoutes = require('./api/routes/products.js');
 const orderRoutes = require('./api/routes/orders.js');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/shop');
+mongoose.connect('mongodb://localhost:27017/shop',{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+});
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({
     extended: false
