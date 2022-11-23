@@ -5,13 +5,24 @@ const router = express.Router();
 
 router.get('/',(req,res,next) =>{
     Product.find()
+            .select('name price _id')
             .exec()
             .then(docs => {
-                if (docs) res.status(200).json(docs)
-                else res.status(404).json({
-                    message: 'Not found'
-                })
-                
+                let response = {
+                    count:docs.length,
+                    products: docs.map(doc =>{
+                        return {
+                            name: doc.name,
+                            price: doc.price,
+                            _id: doc.price,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/products/' + doc._id
+                            }
+                        }
+                    })
+                }
+                res.status(200).json(response)
             })
             .catch(err =>{
                 res.status(500).json({
@@ -50,10 +61,21 @@ router.post('/',(req,res,next) =>{
     })
 });
 router.patch('/:productId',(req,res,next)=>{
-    // 
-    res.status(200).json({
-        message: 'Updated product'
-    })
+    const id = req.params.productId;
+    let updateOps = {};
+    for(let ops of req.body){
+        updateOps[ops.propName] = ops.value;
+    }
+    Product.update({_id:id}, {$set: updateOps})
+            .exec()
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(err =>{
+                res.status(404).json({
+                    message : err.message
+                })
+            })
 });
 router.delete('/:productId', (req,res,next) =>{
     let id = req.params.productId
@@ -67,7 +89,7 @@ router.delete('/:productId', (req,res,next) =>{
                 })
             })
             .catch(err =>{
-                res.status(404).json({
+                res.status(500).json({
                     message: err.message
                 })
             })
