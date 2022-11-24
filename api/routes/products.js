@@ -14,7 +14,7 @@ router.get('/',(req,res,next) =>{
                         return {
                             name: doc.name,
                             price: doc.price,
-                            _id: doc.price,
+                            _id: doc._id,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:3000/products/' + doc._id
@@ -34,9 +34,9 @@ router.get('/',(req,res,next) =>{
 router.get('/:productId',(req,res,next)=>{
     id = req.params.productId
     Product.findById(id)
+    .select('name _id price')
     .exec()
     .then(doc =>{
-        
         res.status(200).json(doc)
     })
     .catch(err =>{
@@ -53,12 +53,16 @@ router.post('/',(req,res,next) =>{
         price: req.body.price
     })
     product.save().then(result=>{
-        console.log(result)
+        res.status(201).json({
+            message: 'Handling POST requests',
+            product: {
+                message: 'Successfully Stored',
+                type: 'GET',
+                link:`localhost:3000/products/${product._id}`   
+            }
+        })
     }).catch(err => console.error(err))
-    res.status(201).json({
-        message: 'Handling POST requests',
-        product: product
-    })
+    
 });
 router.patch('/:productId',(req,res,next)=>{
     const id = req.params.productId;
@@ -66,7 +70,7 @@ router.patch('/:productId',(req,res,next)=>{
     for(let ops of req.body){
         updateOps[ops.propName] = ops.value;
     }
-    Product.update({_id:id}, {$set: updateOps})
+    Product.updateOne({_id:id}, {$set: updateOps})
             .exec()
             .then(result => {
                 res.status(200).json(result)
@@ -83,10 +87,7 @@ router.delete('/:productId', (req,res,next) =>{
     Product.remove({_id: id})
             .exec()
             .then(result =>{
-                res.status(200).json({
-                    object: object,
-                    message: 'The above object is deleted',
-                })
+                
             })
             .catch(err =>{
                 res.status(500).json({
