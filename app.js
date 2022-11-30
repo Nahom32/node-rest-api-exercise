@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const productRoutes = require('./api/routes/products.js');
 const orderRoutes = require('./api/routes/orders.js');
 const mongoose = require('mongoose');
+const multer = require('multer')
+const uploads = multer({dest: 'uploads/'});
+
 mongoose.connect('mongodb://localhost:27017/shop',{
     useNewUrlParser:true,
     useUnifiedTopology:true

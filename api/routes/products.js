@@ -2,6 +2,16 @@ const express = require('express');
 const Product = require('../models/product')
 const mongoose = require('mongoose')
 const router = express.Router();
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function(req,file,cb){
+        cb(null,'./uploads/')
+    },
+    filename: function(req,file,cb){
+        cb(null, new Date().toISOString()+file.filename)
+    }
+})
+const upload = multer({dest: 'uploads/'});
 
 router.get('/',(req,res,next) =>{
     Product.find()
@@ -45,8 +55,8 @@ router.get('/:productId',(req,res,next)=>{
         })
     })
 });
-router.post('/',(req,res,next) =>{
-    
+router.post('/',upload.single('productImage'),(req,res,next) =>{
+    console.log(req.file)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -70,7 +80,7 @@ router.patch('/:productId',(req,res,next)=>{
     for(let ops of req.body){
         updateOps[ops.propName] = ops.value;
     }
-    Product.updateOne({_id:id}, {$set: updateOps})
+    Product.update({_id:id}, {$set: updateOps})
             .exec()
             .then(result => {
                 res.status(200).json(result)
@@ -87,7 +97,10 @@ router.delete('/:productId', (req,res,next) =>{
     Product.remove({_id: id})
             .exec()
             .then(result =>{
-                
+                res.status(204).json({
+                    message: 'Object deleted Successfully',
+                    objectRemoved: object
+                })
             })
             .catch(err =>{
                 res.status(500).json({
