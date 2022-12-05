@@ -4,15 +4,16 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const productRoutes = require('./api/routes/products.js');
 const orderRoutes = require('./api/routes/orders.js');
+const userRoutes = require('./api/routes/user.js')
 const mongoose = require('mongoose');
-const multer = require('multer')
-const uploads = multer({dest: 'uploads/'});
+
 
 mongoose.connect('mongodb://localhost:27017/shop',{
     useNewUrlParser:true,
     useUnifiedTopology:true
 });
 app.use(morgan('dev'));
+app.use('/uploads',express.static('uploads'))
 app.use(bodyParser.urlencoded({
     extended: false
 }))
@@ -29,6 +30,7 @@ app.use((req,res,next)=>{
 })
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use('/user',userRoutes)
 app.use((req,res,next)=>{
     const error = new Error('404 not Found');
     error.status = 404;
