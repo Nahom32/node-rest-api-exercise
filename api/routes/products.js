@@ -3,6 +3,7 @@ const Product = require('../models/product')
 const mongoose = require('mongoose')
 const router = express.Router();
 const multer = require('multer');
+const auth = require('../middleware/check-auth')
 const filter = function(req,file,cb){
     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype ==='image/webp'){
         cb(null,true)
@@ -65,7 +66,7 @@ router.get('/:productId',(req,res,next)=>{
         })
     })
 });
-router.post('/',upload.single('productImage'),(req,res,next) =>{
+router.post('/',auth,upload.single('productImage'),(req,res,next) =>{
     console.log(req.file)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -85,7 +86,7 @@ router.post('/',upload.single('productImage'),(req,res,next) =>{
     }).catch(err => console.error(err))
     
 });
-router.patch('/:productId',(req,res,next)=>{
+router.patch('/:productId',auth,(req,res,next)=>{
     const id = req.params.productId;
     let updateOps = {};
     for(let ops of req.body){
@@ -102,7 +103,7 @@ router.patch('/:productId',(req,res,next)=>{
                 })
             })
 });
-router.delete('/:productId', (req,res,next) =>{
+router.delete('/:productId',auth, (req,res,next) =>{
     let id = req.params.productId
     let object = Product.findById(id)
     Product.remove({_id: id})

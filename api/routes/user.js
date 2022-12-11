@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const User = require('../models/user.js');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 router.post('/signup',async (req,res,next)=>{
     let val = await User.find({email: req.body.email});
     console.log(typeof(val), val)
@@ -57,8 +58,15 @@ router.post("/login", (req,res,next) => {
                     })
                 }
                 if (fin){
+                    const token = jwt.sign({
+                        email: user[0].email,
+                        userId: user[0]._id
+                    },"secret",{
+                        expiresIn: "1h"
+                    })
                     return res.status(200).json({
-                        message: "Authentication passed"
+                        message: "Authentication passed",
+                        token: token
 
                     })
                 }
